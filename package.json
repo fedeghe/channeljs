@@ -1,0 +1,33 @@
+{
+  "name": "channeljs",
+  "version": "1.0.0",
+  "description": "description",
+  "main": "index.js",
+  "scripts": {
+    "build": "malta source/build.json",
+    "buildev": "malta source/buildev.json",
+    "clean": "malta source/clean.json",
+    "test": "mocha",
+    "cover": "istanbul cover _mocha",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+  },
+  "keywords": [
+    "observer",
+    "pubsub",
+    "multi-pubsub"
+  ],
+  "author": "federico.ghedina@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "coveralls": "^3.0.2",
+    "istanbul": "^0.4.5",
+    "malta": "^3.8.19",
+    "malta-browser-refresh": "^1.2.1",
+    "malta-dev-srv": "^1.0.5",
+    "malta-header-comment": "^1.0.4",
+    "malta-js-uglify": "^1.0.2",
+    "malta-mocha": "^1.0.12",
+    "mocha": "^5.2.0",
+    "mocha-lcov-reporter": "^1.3.0"
+  }
+}

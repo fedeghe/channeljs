@@ -1,0 +1,8 @@
+{
+    "EXE": [
+        "rm -rf dist test",
+        "mkdir dist test"
+    ],
+    "source/index.js": "dist -vars=source/vars.json",
+    "source/test/*.js": "test -plugins=malta-mocha"
+}

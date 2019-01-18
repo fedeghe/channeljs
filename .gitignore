@@ -1,0 +1,5 @@
+/node_modules
+/coverage
+.printVersion
+.buildNum.json
+.coveralls.yml
