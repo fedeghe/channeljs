@@ -2,20 +2,10 @@
  * Copyright (c) 2019 Federico Ghedina
  */
 
-
 var Channeljs = (function () {
     'use strict';
     var channels = {},
-        findInArray = (function () {
-            return 'indexOf' in []
-                ? function (arr, mvar) { return arr.indexOf(mvar); }
-                /* istanbul ignore next */
-                : function (arr, mvar) {
-                    var l = arr.length - 1;
-                    while (l >= 0 && arr[l] !== mvar) l--;
-                    return l;
-                }
-        })(),
+        findInArray = function (arr, mvar) { return arr.indexOf(mvar); },
         Channel = function () {
             this.topic2cbs = {};
             this.lateTopics = {};
