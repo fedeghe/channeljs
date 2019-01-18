@@ -1,8 +1,5 @@
 /**
- * Copyright (c) 2019 Federico Ghedina http://roderick.dk
- * License: MIT - http://mrgnrdrck.mit-license.org
- *
- * https://github.com/mroderick/PubSubJS
+ * Copyright (c) 2019 Federico Ghedina
  */
 
 (function (root, factory) {
