@@ -1,8 +1,5 @@
 /**
- * Copyright (c) 2019 Federico Ghedina http://roderick.dk
- * License: MIT - http://mrgnrdrck.mit-license.org
- *
- * https://github.com/mroderick/PubSubJS
+ * Copyright (c) 2019 Federico Ghedina
  */
 
 
@@ -12,6 +9,7 @@ var Channeljs = (function () {
         findInArray = (function () {
             return 'indexOf' in []
                 ? function (arr, mvar) { return arr.indexOf(mvar); }
+                /* istanbul ignore next */
                 : function (arr, mvar) {
                     var l = arr.length - 1;
                     while (l >= 0 && arr[l] !== mvar) l--;
@@ -84,20 +82,17 @@ var Channeljs = (function () {
      *                   argument the topic, the others follow
      * @return {undefined}
      */
-    Channel.prototype.sub = function (topic, cb, force) {
+    Channel.prototype.sub = function (topic, cb) {
         var i = 0,
             l,
             lateRet = [];
         if (topic instanceof Array) {
             for (l = topic.length; i < l; i += 1) {
-                this.sub(topic[i], cb, force);
+                this.sub(topic[i], cb);
             }
         }
         if (!(topic in this.topic2cbs) || !this.enabled) {
             this.topic2cbs[topic] = [];
-        }
-        if (!force && findInArray(this.topic2cbs[topic], cb) >= 0) {
-            return this;
         }
 
         this.topic2cbs[topic].push(cb);
@@ -131,15 +126,12 @@ var Channeljs = (function () {
         }
         if (topic in this.topic2cbs) {
             i = findInArray(this.topic2cbs[topic], cb);
-            if (i >= 0) {
-                this.topic2cbs[topic].splice(i, 1);
-                this.topic2cbs[topic].length === 0 && (delete this.topic2cbs[topic])
-            }
+            i >= 0
+            && this.topic2cbs[topic].splice(i, 1)
+            && (this.topic2cbs[topic].length === 0 && (delete this.topic2cbs[topic]))
         }
         if (topic in this.lateTopics) {
-            i = findInArray(this.lateTopics[topic], cb);
-            i >= 0 && this.lateTopics[topic].splice(i, 1);
-            this.lateTopics[topic].length === 0 && (delete this.lateTopics[topic])
+            delete this.lateTopics[topic];
         }
         return this;
     };
@@ -203,5 +195,5 @@ var Channeljs = (function () {
             return channels[name];
         }
     };
-});
+})();
 (typeof exports === 'object') && (module.exports = Channeljs);

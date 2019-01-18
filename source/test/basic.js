@@ -3,9 +3,7 @@ var assert = require('assert'),
 
 function getLiteralSize(o) {
     var ret = 0, i;
-    for (i in o) {
-        ret++;
-    }
+    for (i in o) ret++;
     return ret;
 }
 function double(topic, r) { return r * 2; }
@@ -193,10 +191,42 @@ describe('watch out lateTopics', () => {
     it('basic pub and THEN sub should work', () => {
         var c1 = Channeljs.get('one');
         c1.pub('mult', [2, 3, 4, 5]);
+        c1.pub('mult', [4, 5, 6, 7]);
+        c1.pub('mult2', [4, 5, 6, 7]);
+        
         var res = c1.sub('mult', function (topic, a, b, c, d) {
             return a * b * c * d;
         });
         assert.equal(res[0], 120);
+        assert.equal(res[1], 840);
+        c1.reset();
+    });
+    it('lateTopic reset', () => {
+        var c1 = Channeljs.get('one');
+        c1.pub('mult', [2, 3, 4, 5]);
+        c1.pub('mult', [4, 5, 6, 7]);
+        c1.pub('mult2', [4, 5, 6, 7]);
+        function cb(topic, a, b, c, d) {
+            return a * b * c * d;
+        }
+        var res = c1.sub('mult', cb);
+        assert.equal(res[0], 120);
+        assert.equal(res[1], 840);
+        c1.reset('mult');
+        c1.reset();
+    });
+    it('lateTopic unsub', () => {
+        var c1 = Channeljs.get('one');
+        c1.pub('mult', [2, 3, 4, 5]);
+        c1.pub('mult', [4, 5, 6, 7]);
+        c1.pub('mult2', [4, 5, 6, 7]);
+        function cb(topic, a, b, c, d) {
+            return a * b * c * d;
+        }
+        var res = c1.sub('mult', cb);
+        assert.equal(res[0], 120);
+        assert.equal(res[1], 840);
+        c1.unsub(['mult'], [cb]);
         c1.reset();
     });
 });
