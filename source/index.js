@@ -5,27 +5,8 @@
  * https://github.com/mroderick/PubSubJS
  */
 
-(function (root, factory) {
-    'use strict';
 
-    var Channeljs = {},
-        define = root.define;
-
-    root.Channeljs = Channeljs;
-
-    factory(Channeljs);
-
-    if (typeof exports === 'object') {
-        if (module !== undefined && module.exports) {
-            exports = module.exports = Channeljs; // Node.js specific `module.exports`
-        }
-        exports.Channeljs = Channeljs; // CommonJS  module
-        module.exports = exports = Channeljs;
-
-    } else if (typeof define === 'function' && define.amd) {
-        define(function () { return Channeljs; }); // AMD
-    }
-}((typeof window === 'object' && window) || this, function (Channeljs) {
+var Channeljs = (function () {
     'use strict';
     var channels = {},
         findInArray = (function () {
@@ -105,7 +86,8 @@
      */
     Channel.prototype.sub = function (topic, cb, force) {
         var i = 0,
-            l;
+            l,
+            lateRet = [];
         if (topic instanceof Array) {
             for (l = topic.length; i < l; i += 1) {
                 this.sub(topic[i], cb, force);
@@ -125,8 +107,9 @@
         //
         if (topic in this.lateTopics) {
             for (i = 0, l = this.lateTopics[topic].length; i < l; i++) {
-                cb.apply(null, [topic].concat(this.lateTopics[topic][i].args));
+                lateRet.push(cb.apply(null, [topic].concat(this.lateTopics[topic][i].args)));
             }
+            return lateRet;
         }
     };
 
@@ -139,12 +122,13 @@
     Channel.prototype.unsub = function (topic, cb) {
         var i = 0,
             l;
-        if (topic instanceof Array) {
+        if (topic instanceof Array
+            && cb instanceof Array
+        ) {
             for (l = topic.length; i < l; i += 1) {
-                this.unsub(topic[i], cb);
+                this.unsub(topic[i], cb[i]);
             }
         }
-
         if (topic in this.topic2cbs) {
             i = findInArray(this.topic2cbs[topic], cb);
             if (i >= 0) {
@@ -197,27 +181,27 @@
         return this;
     };
 
-
-    Channeljs.getChannels = function (enabledStatus) {
-        var ret = {},
-            i;
-        
-        if (typeof enabledStatus == 'boolean') {
-            for (i in channels) {
-                if (channels[i].enabled === enabledStatus) {
-                    ret[i] = channels[i]
+    return  {
+        getChannels: function (enabledStatus) {
+            var ret = {},
+                i;
+            if (typeof enabledStatus == 'boolean') {
+                for (i in channels) {
+                    if (channels[i].enabled === enabledStatus) {
+                        ret[i] = channels[i]
+                    }
                 }
+            } else {
+                ret = channels;
             }
-        } else {
-            ret = channels;
+            return ret;
+        },
+        get: function (name) {
+            if (!(name in channels)) {
+                channels[name] = new Channel();
+            }
+            return channels[name];
         }
-        return ret;
     };
-
-    Channeljs.get = function (name) {
-        if (!(name in channels)) {
-            channels[name] = new Channel();
-        }
-        return channels[name];
-    };
-}));
+});
+(typeof exports === 'object') && (module.exports = Channeljs);

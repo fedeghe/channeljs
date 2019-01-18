@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Channel = require('../dist/');
+    Channeljs = require('../dist/');
 
 function getLiteralSize(o) {
     var ret = 0, i;
@@ -8,12 +8,14 @@ function getLiteralSize(o) {
     }
     return ret;
 }
+function double(topic, r) { return r * 2; }
+function triple(topic, r) { return r * 3; }
+function quadruple(topic, r) { return r * 4; }
 
-describe('basic operations', () => {
-    
+describe('basic operations', () => {   
     it('should create a channel', () => {
-        var c1 = Channel.get('one'),
-            c2 = Channel.get('two');
+        var c1 = Channeljs.get('one'),
+            c2 = Channeljs.get('two');
         assert.equal(c1.enabled, true);
         assert.equal(typeof c1.topic2cbs, 'object');
         assert.equal(getLiteralSize(c1.topic2cbs), 0);
@@ -23,12 +25,12 @@ describe('basic operations', () => {
     });
 
     it('should get all channels', () => {
-        var channels = Channel.getChannels();
+        var channels = Channeljs.getChannels();
         assert(getLiteralSize(channels), 2)
     });
 
     it('should attach a subscriber to a topic', () => {
-        var c = Channel.get('one');
+        var c = Channeljs.get('one');
         c.sub('summing', function (topic, a1, a2, a3) {
             return [topic, a1 + a2 + a3];
         });
@@ -38,20 +40,24 @@ describe('basic operations', () => {
     });
 
     it('should publish on the topic', () => {
-        var c = Channel.get('one');
+        var c = Channeljs.get('one');
         var results = c.pub('summing', [3, 5, 7]);
         assert.equal(results[0][0], 'summing');
         assert.equal(results[0][1], 15);
         assert.equal(results[1], 'summing');
     });
 });
+
+
+
+
 describe('check enable, disable and reset', () => {
     it('should disable and listen for silence on publish', () => {
-        var c = Channel.get('one');
+        var c = Channeljs.get('one');
         c.disable();
-        var allChannels = Channel.getChannels(),
-            disabledChannels = Channel.getChannels(false),
-            enabledChannels = Channel.getChannels(true);
+        var allChannels = Channeljs.getChannels(),
+            disabledChannels = Channeljs.getChannels(false),
+            enabledChannels = Channeljs.getChannels(true);
         assert(getLiteralSize(allChannels), 2)
         assert(getLiteralSize(disabledChannels), 1)
         assert(getLiteralSize(enabledChannels), 1)
@@ -60,7 +66,7 @@ describe('check enable, disable and reset', () => {
     });
 
     it('shpuld re-enable and check on publish', () => {
-        var c = Channel.get('one');
+        var c = Channeljs.get('one');
         c.enable();
         var results = c.pub('summing', [3, 5, 7]);
         assert.equal(results[0][0], 'summing');
@@ -69,17 +75,17 @@ describe('check enable, disable and reset', () => {
     });
 
     it('reset all topic on channel and listen for silence on publish', () => {
-        var c = Channel.get('one');
+        var c = Channeljs.get('one');
         c.reset();
         var results = c.pub('summing', [3, 5, 7]);
         assert.equal(results, null);
     });
 
     it('add more topics, check with multipub, reset some, recheck', () => {
-        var c = Channel.get('one');
-        c.sub('double', function (topic, r) { return r * 2;})
-        c.sub('triple', function (topic, r) { return r * 3;})
-        c.sub('quadruple', function (topic, r) { return r * 4;})
+        var c = Channeljs.get('one');
+        c.sub('double', double)
+        c.sub('triple', triple)
+        c.sub('quadruple', quadruple)
         var results = c.pub(['double', 'triple', 'quadruple'], [7]);
         
         assert.equal(results.length, 3);
@@ -101,19 +107,34 @@ describe('check enable, disable and reset', () => {
         c.reset();
     });
 
+
+
+    it('should reset', () => {
+        var c1 = Channeljs.get('one');
+        assert.equal(c1.enabled, true);
+        assert.equal(typeof c1.topic2cbs, 'object');
+        assert.equal(getLiteralSize(c1.topic2cbs), 0);
+        assert.equal(typeof c1.lateTopics, 'object');
+        assert.equal(getLiteralSize(c1.lateTopics), 0);
+        assert.equal(typeof c1, 'object');
+    });
+});
+
+
+describe('sub unsub', () => {
     it('should sub once', function () {
-        var c = Channel.get('one');
-        c.once('double', function (topic, r) { return r * 2; })
+        var c = Channeljs.get('one');
+        c.once('double', double)
         var results = c.pub('double', [7]);
         assert.equal(results[0], 14)
         c.reset();
     });
 
     it('should unsub', () => {
-        var c = Channel.get('one');
-        function double(topic, r){ return r * 2;}
-        function triple(topic, r){ return r * 3;}
-        function quadruple(topic, r){ return r * 4;}
+        var c = Channeljs.get('one');
+        function double(topic, r) { return r * 2; }
+        function triple(topic, r) { return r * 3; }
+        function quadruple(topic, r) { return r * 4; }
         c.sub('double', double)
         c.sub('triple', triple)
         c.sub('quadruple', quadruple)
@@ -128,20 +149,54 @@ describe('check enable, disable and reset', () => {
         assert.equal(results.length, 2);
         assert.equal(results[0][0], 14);
         assert.equal(results[1][0], 28);
-        
+
         results = c.pub('triple', [7]);
         assert.equal(results, null);
         c.reset();
     });
-    it('should reset', () => {
-        var c1 = Channel.get('one');
-        assert.equal(c1.enabled, true);
-        assert.equal(typeof c1.topic2cbs, 'object');
-        assert.equal(getLiteralSize(c1.topic2cbs), 0);
-        assert.equal(typeof c1.lateTopics, 'object');
-        assert.equal(getLiteralSize(c1.lateTopics), 0);
-        assert.equal(typeof c1, 'object');
+    it('should multiple unsub', () => {
+        var c = Channeljs.get('one');
+        c.pub('double', function (topic) {return topic})
+        c.sub('double', double)
+        c.sub('triple', triple)
+        c.sub('quadruple', quadruple)
+        var results = c.pub(['double', 'triple', 'quadruple'], [7]);
+        assert.equal(results.length, 3);
+        assert.equal(results[0][0], 14);
+        assert.equal(results[1][0], 21);
+        assert.equal(results[2][0], 28);
+
+        c.unsub(['double', 'triple'], [double, triple]);
+        results = c.pub(['double', 'triple', 'quadruple'], [7]);
+        assert.equal(results.length, 1);
+        assert.equal(results[0][0], 28);
+
+        results = c.pub('triple', [7]);
+        assert.equal(results, null);
+        c.reset();
     });
+    it('should multiple sub', () => {
+        var c = Channeljs.get('one');
+        
+        c.sub(['double', 'triple', 'quadruple'], quadruple)
+        var results1 = c.pub('double', [7]),
+            results2 = c.pub('triple', [8]),
+            results3 = c.pub('quadruple', [9]);
+        assert.equal(results1[0], 28);
+        assert.equal(results2[0], 32);
+        assert.equal(results3[0], 36);
+        c.reset();
+    });
+});
 
-
+describe('watch out lateTopics', () => {
+    it('basic pub and THEN sub should work', () => {
+        var c1 = Channeljs.get('one');
+        c1.pub('mult', [2, 3, 4, 5]);
+        var res = c1.sub('mult', function (topic, a, b, c, d) {
+            return a * b * c * d;
+        });
+        assert.equal(res[0], 120);
+        c1.reset();
+    });
 });

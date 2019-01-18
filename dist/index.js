@@ -1,12 +1,207 @@
-/*
-   ________                           __    _______
-  / ____/ /_  ____ _____  ____  ___  / /   / / ___/
- / /   / __ \/ __ `/ __ \/ __ \/ _ \/ /_  / /\__ \
-/ /___/ / / / /_/ / / / / / / /  __/ / /_/ /___/ /
-\____/_/ /_/\__,_/_/ /_/_/ /_/\___/_/\____//____/
+/**
+ * Copyright (c) 2019 Federico Ghedina http://roderick.dk
+ * License: MIT - http://mrgnrdrck.mit-license.org
+ *
+ * https://github.com/mroderick/PubSubJS
+ */
 
-Date: 18/1/2019
-Size: ~2KB
-Author: Federico Ghedina <federico.ghedina@gmail.com>
-*/
-!function(t,i){"use strict";var e={},s=t.define;t.Channeljs=e,function(t){var i={},e=function(){return"indexOf"in[]?function(t,i){return t.indexOf(i)}:function(t,i){for(var e=t.length-1;e>=0&&t[e]!==i;)e--;return e}}(),s=function(){this.topic2cbs={},this.lateTopics={},this.enabled=!0};s.prototype.enable=function(){this.enabled=!0},s.prototype.disable=function(){this.enabled=!1},s.prototype.pub=function(t,i){var e,s=0,n=[];if(t instanceof Array)for(e=t.length;s<e;s+=1)t[s]in this.topic2cbs&&n.push(this.pub(t[s],i));else{if(!(t in this.topic2cbs&&this.enabled))return t in this.lateTopics?this.lateTopics[t].push({args:i}):this.lateTopics[t]=[{args:i}],null;for(e=this.topic2cbs[t].length;s<e;s+=1)n.push(this.topic2cbs[t][s].apply(null,[t].concat(i)))}return n},s.prototype.sub=function(t,i,s){var n,o=0;if(t instanceof Array)for(n=t.length;o<n;o+=1)this.sub(t[o],i,s);if(t in this.topic2cbs&&this.enabled||(this.topic2cbs[t]=[]),!s&&e(this.topic2cbs[t],i)>=0)return this;if(this.topic2cbs[t].push(i),t in this.lateTopics)for(o=0,n=this.lateTopics[t].length;o<n;o++)i.apply(null,[t].concat(this.lateTopics[t][o].args))},s.prototype.unsub=function(t,i){var s,n=0;if(t instanceof Array)for(s=t.length;n<s;n+=1)this.unsub(t[n],i);return t in this.topic2cbs&&(n=e(this.topic2cbs[t],i))>=0&&(this.topic2cbs[t].splice(n,1),0===this.topic2cbs[t].length&&delete this.topic2cbs[t]),t in this.lateTopics&&(n=e(this.lateTopics[t],i),n>=0&&this.lateTopics[t].splice(n,1),0===this.lateTopics[t].length&&delete this.lateTopics[t]),this},s.prototype.once=function(t,i){function e(){return s.unsub(t,e),i.apply(null,Array.prototype.slice.call(arguments,0))}var s=this;this.sub(t,e)},s.prototype.reset=function(){var t=Array.prototype.slice.call(arguments,0),i=t.length,e=0;if(!i)return this.topic2cbs={},this.lateTopics={},this;for(null;e<i;e+=1)t[e]in this.topic2cbs&&delete this.topic2cbs[t[e]],t[e]in this.lateTopics&&delete this.lateTopics[t[e]];return this},t.getChannels=function(t){var e,s={};if("boolean"==typeof t)for(e in i)i[e].enabled===t&&(s[e]=i[e]);else s=i;return s},t.get=function(t){return t in i||(i[t]=new s),i[t]}}(e),"object"==typeof exports?(void 0!==module&&module.exports&&(exports=module.exports=e),exports.Channeljs=e,module.exports=exports=e):"function"==typeof s&&s.amd&&s(function(){return e})}("object"==typeof window&&window||this);
+
+var Channeljs = (function () {
+    'use strict';
+    var channels = {},
+        findInArray = (function () {
+            return 'indexOf' in []
+                ? function (arr, mvar) { return arr.indexOf(mvar); }
+                : function (arr, mvar) {
+                    var l = arr.length - 1;
+                    while (l >= 0 && arr[l] !== mvar) l--;
+                    return l;
+                }
+        })(),
+        Channel = function () {
+            this.topic2cbs = {};
+            this.lateTopics = {};
+            this.enabled = true;
+        };
+
+    /**
+     * enable cb execution on publish
+     * @return {undefined}
+     */
+    Channel.prototype.enable = function () {
+        this.enabled = true;
+    };
+
+    /**
+     * disable cb execution on publish
+     * @return {undefined}
+     */
+    Channel.prototype.disable = function () {
+        this.enabled = false;
+    };
+
+    /**
+     * publish an event on that channel
+     * @param  {String} topic
+     *                  the topic that must be published
+     * @param  {Array} args
+     *                 array of arguments that will be passed
+     *                 to every callback
+     * @return {undefined}
+     */
+    Channel.prototype.pub = function (topic, args) {
+        var i = 0,
+            l,
+            res = [];
+        if (topic instanceof Array) {
+            for (l = topic.length; i < l; i += 1) {
+                topic[i] in this.topic2cbs
+                && res.push(this.pub(topic[i], args));
+            }
+        } else {
+            if (!(topic in this.topic2cbs) || !this.enabled) {
+                //save it for late pub, at everysub to this topic
+                if (topic in this.lateTopics) {
+                    this.lateTopics[topic].push({ args: args });
+                } else {
+                    this.lateTopics[topic] = [{ args: args }];
+                }
+                return null;
+            }
+            for (l = this.topic2cbs[topic].length; i < l; i += 1) {
+                res.push(this.topic2cbs[topic][i].apply(null, [topic].concat(args)));
+            }
+        }
+        return res;
+    };
+
+    /**
+     * add a callback to a topic
+     * @param {String} topic
+     *                 the topic that must be published
+     * @param {Function} cb
+     *                   the callback will receive as first
+     *                   argument the topic, the others follow
+     * @return {undefined}
+     */
+    Channel.prototype.sub = function (topic, cb, force) {
+        var i = 0,
+            l,
+            lateRet = [];
+        if (topic instanceof Array) {
+            for (l = topic.length; i < l; i += 1) {
+                this.sub(topic[i], cb, force);
+            }
+        }
+        if (!(topic in this.topic2cbs) || !this.enabled) {
+            this.topic2cbs[topic] = [];
+        }
+        if (!force && findInArray(this.topic2cbs[topic], cb) >= 0) {
+            return this;
+        }
+
+        this.topic2cbs[topic].push(cb);
+
+        // check lateTopics
+        // save it for late pub, at everysub to this topic
+        //
+        if (topic in this.lateTopics) {
+            for (i = 0, l = this.lateTopics[topic].length; i < l; i++) {
+                lateRet.push(cb.apply(null, [topic].concat(this.lateTopics[topic][i].args)));
+            }
+            return lateRet;
+        }
+    };
+
+    /**
+     * removes an existing booked callback from the topic list
+     * @param  {[type]}   topic [description]
+     * @param  {Function} cb    [description]
+     * @return {[type]}         [description]
+     */
+    Channel.prototype.unsub = function (topic, cb) {
+        var i = 0,
+            l;
+        if (topic instanceof Array
+            && cb instanceof Array
+        ) {
+            for (l = topic.length; i < l; i += 1) {
+                this.unsub(topic[i], cb[i]);
+            }
+        }
+        if (topic in this.topic2cbs) {
+            i = findInArray(this.topic2cbs[topic], cb);
+            if (i >= 0) {
+                this.topic2cbs[topic].splice(i, 1);
+                this.topic2cbs[topic].length === 0 && (delete this.topic2cbs[topic])
+            }
+        }
+        if (topic in this.lateTopics) {
+            i = findInArray(this.lateTopics[topic], cb);
+            i >= 0 && this.lateTopics[topic].splice(i, 1);
+            this.lateTopics[topic].length === 0 && (delete this.lateTopics[topic])
+        }
+        return this;
+    };
+
+    /**
+     * one shot sub with auto unsub after first shot
+     * @param  {[type]}   topic [description]
+     * @param  {Function} cb    [description]
+     * @return {[type]}         [description]
+     */
+    Channel.prototype.once = function (topic, cb) {
+        var self = this;
+        function cbTMP() {
+            self.unsub(topic, cbTMP);
+            return cb.apply(null, Array.prototype.slice.call(arguments, 0));
+        };
+        this.sub(topic, cbTMP);
+    };
+
+    /**
+     * Removes all callbacks for one or more topic
+     * @param [String] ...
+     *                 the topic queues that must  be emptied
+     * @return [Channel] the instance
+     */
+    Channel.prototype.reset = function () {
+        var ts = Array.prototype.slice.call(arguments, 0),
+            l = ts.length,
+            i = 0;
+        if (!l) {
+            this.topic2cbs = {};
+            this.lateTopics = {};
+            return this;
+        }
+        for (null; i < l; i += 1) {
+            ts[i] in this.topic2cbs && (delete this.topic2cbs[ts[i]]);
+            ts[i] in this.lateTopics && (delete this.lateTopics[ts[i]]);
+        }
+        return this;
+    };
+
+    return  {
+        getChannels: function (enabledStatus) {
+            var ret = {},
+                i;
+            if (typeof enabledStatus == 'boolean') {
+                for (i in channels) {
+                    if (channels[i].enabled === enabledStatus) {
+                        ret[i] = channels[i]
+                    }
+                }
+            } else {
+                ret = channels;
+            }
+            return ret;
+        },
+        get: function (name) {
+            if (!(name in channels)) {
+                channels[name] = new Channel();
+            }
+            return channels[name];
+        }
+    };
+});
+(typeof exports === 'object') && (module.exports = Channeljs);
