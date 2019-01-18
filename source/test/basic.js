@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Channeljs = require('../dist/');
+    Channeljs = require('../source/');
 
 function getLiteralSize(o) {
     var ret = 0, i;
