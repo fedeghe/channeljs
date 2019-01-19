@@ -72,13 +72,13 @@ var Channeljs = (function () {
      *                   argument the topic, the others follow
      * @return {undefined}
      */
-    Channel.prototype.sub = function (topic, cb) {
+    Channel.prototype.sub = function (topic, cb, retro) {
         var i = 0,
             l,
             lateRet = [];
         if (topic instanceof Array) {
             for (l = topic.length; i < l; i += 1) {
-                this.sub(topic[i], cb);
+                this.sub(topic[i], cb, retro);
             }
         }
         if (!(topic in this.topic2cbs) || !this.enabled) {
@@ -90,7 +90,7 @@ var Channeljs = (function () {
         // check lateTopics
         // save it for late pub, at everysub to this topic
         //
-        if (topic in this.lateTopics) {
+        if (retro && topic in this.lateTopics) {
             for (i = 0, l = this.lateTopics[topic].length; i < l; i++) {
                 lateRet.push(cb.apply(null, [topic].concat(this.lateTopics[topic][i].args)));
             }
