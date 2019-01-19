@@ -196,7 +196,7 @@ describe('watch out lateTopics', () => {
         
         var res = c1.sub('mult', function (topic, a, b, c, d) {
             return a * b * c * d;
-        });
+        }, true);
         assert.equal(res[0], 120);
         assert.equal(res[1], 840);
         c1.reset();
@@ -209,7 +209,7 @@ describe('watch out lateTopics', () => {
         function cb(topic, a, b, c, d) {
             return a * b * c * d;
         }
-        var res = c1.sub('mult', cb);
+        var res = c1.sub('mult', cb, true);
         assert.equal(res[0], 120);
         assert.equal(res[1], 840);
         c1.reset('mult');
@@ -223,7 +223,7 @@ describe('watch out lateTopics', () => {
         function cb(topic, a, b, c, d) {
             return a * b * c * d;
         }
-        var res = c1.sub('mult', cb);
+        var res = c1.sub('mult', cb, true);
         assert.equal(res[0], 120);
         assert.equal(res[1], 840);
         c1.unsub(['mult'], [cb]);
