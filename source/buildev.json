@@ -3,6 +3,6 @@
         "rm -rf dist test",
         "mkdir dist test"
     ],
-    "source/index.js": "dist -vars=source/vars.json",
+    "source/index.js": "dist -plugins=malta-header-comment[name:'source/head.txt'] -vars=source/vars.json -vars=source/vars.json",
     "source/test/*.js": "test -plugins=malta-mocha"
 }
