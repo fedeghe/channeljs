@@ -59,31 +59,41 @@ Creates, if not already existing, an instance of Channel indexed as `ux`  and re
 
 ## @instance methods
 
-- #### pub(topic \<string\>|\<array\>, parameters \<array\>)
+#### pub(topic \<string\>|\<array\>, parameters \<array\>)
 
-    ``` js
-    uxEvents.pub('cartUpdated', articles)
-    ```  
-    Publishes parameters on one or more topics.  
+``` js
+uxEvents.pub('cartUpdated', articles)
+```  
+Publishes parameters on one or more topics.  
 
-- #### sub(topic \<string\>|\<array\>, subscriber \<function\> {, retroActive \<boolean\>})
-    ``` js
-    uxEvents.sub('cartUpdated', function () {
-        var articles = [].slice.call(arguments, 0);
-    })
-    ```
-    Registers a listener to a particular _topic_ on the channel; the subscribing function will receive all parameters passed in an array as second parameter at _pub_ call:
-    ``` js
-    ch.pub('bePolite', ['Hello', 'World', '!'])
-    ...
-    ch.sub('bePolite', function (a, b, c) {
-        console.log(`${a} ${b} ${c}`) // Hello World !
-    })
-    ```  
-    The `retroActive` parameter allows the subcriber to be executed immediately for all relevant past published events.
-- #### once(topic \<string\>|\<array\>, subscriber \<function\>)
-    Exactly as `sub` but once, not retroactivable.
+#### sub(topic \<string\>|\<array\>, subscriber \<function\> {, retroActive \<boolean\>})
+``` js
+uxEvents.sub('cartUpdated', function () {
+    var articles = [].slice.call(arguments, 0);
+})
+```
+Registers a listener to a particular _topic_ on the channel; the subscribing function will receive all parameters passed in an array as second parameter at _pub_ call:
+``` js
+ch.pub('bePolite', ['Hello', 'World', '!'])
+...
+ch.sub('bePolite', function (a, b, c) {
+    console.log(`${a} ${b} ${c}`) // Hello World !
+})
+```  
+The `retroActive` parameter allows the subcriber to be executed immediately for all relevant past published events.  
 
-- #### enabel(topic \<string\>|\<array\>)
-    Exactly as `sub` but once, not retroactivable.
+#### unsub(topic \<string\>|\<array\>, subscriber \<function\>)
+Removes the _subscriber_ from the _topic_
+
+#### once(topic \<string\>|\<array\>, subscriber \<function\>)
+Exactly as `sub` but once, not retroactivable.
+
+#### enabe()
+Enables a channel
+
+#### disabe()
+Disables a channel
+
+---
     
+for the moment .... not to be continued
