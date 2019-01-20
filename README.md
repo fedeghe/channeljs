@@ -69,7 +69,10 @@ Publishes parameters on one or more topics
 #### pub(topic \<string\>|\<array\>, parameters \<array\>)
 ``` js
 uxEvents.sub('cartUpdated', function (topic) {
-    
+    var articles = [].slice.call(arguments, 1);
+    // TO BE CONTINUED...
 })
 ```
 Publishes parameters on one or more topics
+
+// TO BE CONTINUED...
