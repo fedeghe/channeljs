@@ -6,9 +6,9 @@ function getLiteralSize(o) {
     for (i in o) ret++;
     return ret;
 }
-function double(topic, r) { return r * 2; }
-function triple(topic, r) { return r * 3; }
-function quadruple(topic, r) { return r * 4; }
+function double(r) { return r * 2; }
+function triple(r) { return r * 3; }
+function quadruple(r) { return r * 4; }
 
 describe('basic operations', () => {   
     it('should create a channel', () => {
@@ -29,8 +29,8 @@ describe('basic operations', () => {
 
     it('should attach a subscriber to a topic', () => {
         var c = Channeljs.get('one');
-        c.sub('summing', function (topic, a1, a2, a3) {
-            return [topic, a1 + a2 + a3];
+        c.sub('summing', function (a1, a2, a3) {
+            return a1 + a2 + a3;
         });
         c.sub('summing', function (e){return e});
         assert.equal(getLiteralSize(c.topic2cbs), 1);
@@ -40,13 +40,11 @@ describe('basic operations', () => {
     it('should publish on the topic', () => {
         var c = Channeljs.get('one');
         var results = c.pub('summing', [3, 5, 7]);
-        assert.equal(results[0][0], 'summing');
-        assert.equal(results[0][1], 15);
-        assert.equal(results[1], 'summing');
+        // assert.equal(results[0][0], 'summing');
+        assert.equal(results[0], 15);
+        assert.equal(results[1], 3);
     });
 });
-
-
 
 
 describe('check enable, disable and reset', () => {
@@ -63,13 +61,13 @@ describe('check enable, disable and reset', () => {
         assert.equal(results, null);
     });
 
-    it('shpuld re-enable and check on publish', () => {
+    it('should re-enable and check on publish', () => {
         var c = Channeljs.get('one');
         c.enable();
         var results = c.pub('summing', [3, 5, 7]);
-        assert.equal(results[0][0], 'summing');
-        assert.equal(results[0][1], 15);
-        assert.equal(results[1], 'summing');
+        
+        assert.equal(results[0], 15);
+        assert.equal(results[1], 3);
     });
 
     it('reset all topic on channel and listen for silence on publish', () => {
@@ -92,7 +90,6 @@ describe('check enable, disable and reset', () => {
         assert.equal(results[2][0], 28);
         c.reset('triple');
         results = c.pub(['double', 'triple', 'quadruple'], [7]);
-        
         assert.equal(results.length, 2);
         assert.equal(results[0].length, 1);
         assert.equal(results[0][0], 14);
@@ -119,6 +116,7 @@ describe('check enable, disable and reset', () => {
 });
 
 
+
 describe('sub unsub', () => {
     it('should sub once', function () {
         var c = Channeljs.get('one');
@@ -130,9 +128,6 @@ describe('sub unsub', () => {
 
     it('should unsub', () => {
         var c = Channeljs.get('one');
-        function double(topic, r) { return r * 2; }
-        function triple(topic, r) { return r * 3; }
-        function quadruple(topic, r) { return r * 4; }
         c.sub('double', double)
         c.sub('triple', triple)
         c.sub('quadruple', quadruple)
@@ -187,6 +182,7 @@ describe('sub unsub', () => {
     });
 });
 
+
 describe('watch out lateTopics', () => {
     it('basic pub and THEN sub should work', () => {
         var c1 = Channeljs.get('one');
@@ -194,7 +190,7 @@ describe('watch out lateTopics', () => {
         c1.pub('mult', [4, 5, 6, 7]);
         c1.pub('mult2', [4, 5, 6, 7]);
         
-        var res = c1.sub('mult', function (topic, a, b, c, d) {
+        var res = c1.sub('mult', function (a, b, c, d) {
             return a * b * c * d;
         }, true);
         assert.equal(res[0], 120);
@@ -206,7 +202,7 @@ describe('watch out lateTopics', () => {
         c1.pub('mult', [2, 3, 4, 5]);
         c1.pub('mult', [4, 5, 6, 7]);
         c1.pub('mult2', [4, 5, 6, 7]);
-        function cb(topic, a, b, c, d) {
+        function cb(a, b, c, d) {
             return a * b * c * d;
         }
         var res = c1.sub('mult', cb, true);
@@ -220,7 +216,7 @@ describe('watch out lateTopics', () => {
         c1.pub('mult', [2, 3, 4, 5]);
         c1.pub('mult', [4, 5, 6, 7]);
         c1.pub('mult2', [4, 5, 6, 7]);
-        function cb(topic, a, b, c, d) {
+        function cb(a, b, c, d) {
             return a * b * c * d;
         }
         var res = c1.sub('mult', cb, true);
@@ -230,3 +226,4 @@ describe('watch out lateTopics', () => {
         c1.reset();
     });
 });
+

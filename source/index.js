@@ -57,7 +57,7 @@ var Channeljs = (function () {
                 return null;
             }
             for (l = this.topic2cbs[topic].length; i < l; i += 1) {
-                res.push(this.topic2cbs[topic][i].apply(null, [topic].concat(args)));
+                res.push(this.topic2cbs[topic][i].apply(null, args));
             }
         }
         return res;
@@ -92,7 +92,7 @@ var Channeljs = (function () {
         //
         if (retro && topic in this.lateTopics) {
             for (i = 0, l = this.lateTopics[topic].length; i < l; i++) {
-                lateRet.push(cb.apply(null, [topic].concat(this.lateTopics[topic][i].args)));
+                lateRet.push(cb.apply(null, this.lateTopics[topic][i].args));
             }
             return lateRet;
         }
