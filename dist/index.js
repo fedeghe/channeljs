@@ -21,22 +21,37 @@ var Channeljs = (function () {
             this.topic2cbs = {};
             this.lateTopics = {};
             this.enabled = true;
+            this.disabledTopics = {};
         };
 
     /**
      * enable cb execution on publish
      * @return {undefined}
      */
-    Channel.prototype.enable = function () {
-        this.enabled = true;
+    Channel.prototype.enable = function (topics) {
+
+        if (topics instanceof Array) {
+            for (var i = 0, l = topics.length, j; i < l; i++) {
+                if (topics[i] in this.disabledTopics)
+                    this.disabledTopics[topics[i]] = false
+            }
+        } else {
+            this.enabled = true;
+        }
     };
 
     /**
      * disable cb execution on publish
      * @return {undefined}
      */
-    Channel.prototype.disable = function () {
-        this.enabled = false;
+    Channel.prototype.disable = function (topics) {
+        if (topics instanceof Array) {
+            for (var i = 0, l = topics.length, j; i < l; i++) {
+                this.disabledTopics[topics[i]] = true;
+            }
+        } else {
+            this.enabled = false;
+        }
     };
 
     /**
@@ -58,6 +73,8 @@ var Channeljs = (function () {
                 && res.push(this.pub(topic[i], args));
             }
         } else {
+            if (topic in this.disabledTopics && this.disabledTopics[topic])
+                return null;
             if (!(topic in this.topic2cbs) || !this.enabled) {
                 //save it for late pub, at everysub to this topic
                 if (topic in this.lateTopics) {
