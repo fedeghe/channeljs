@@ -11,26 +11,28 @@ var Channeljs = (function () {
             this.topic2cbs = {};
             this.lateTopics = {};
             this.enabled = true;
-        };
+        },
+        toggle = function (inst, enabled){
+            var changed = inst.enabled
+            inst.enabled = enabled;
+            return changed !== inst.enabled;
+        },
+        proto = Channel.prototype;
 
     /**
      * enable cb execution on publish
-     * @return {undefined}
+     * @return {boolean}
      */
-    Channel.prototype.enable = function () {
-        var changed = this.enabled
-        this.enabled = true;
-        return changed !== this.enabled;
+    proto.enable = function () {
+        return toggle(this, true);
     };
 
     /**
      * disable cb execution on publish
-     * @return {undefined}
+     * @return {boolean}
      */
-    Channel.prototype.disable = function () {
-        var changed = this.enabled
-        this.enabled = false;
-        return changed !== this.enabled;
+    proto.disable = function () {
+        return toggle(this, false);
     };
 
     /**
@@ -42,7 +44,7 @@ var Channeljs = (function () {
      *                 to every callback
      * @return {undefined}
      */
-    Channel.prototype.pub = function (topic, args) {
+    proto.pub = function (topic, args) {
         var i = 0,
             l,
             res = [];
@@ -77,7 +79,7 @@ var Channeljs = (function () {
      *                   argument the topic, the others follow
      * @return {undefined}
      */
-    Channel.prototype.sub = function (topic, cb, retro) {
+    proto.sub = function (topic, cb, retro) {
         var i = 0,
             l,
             lateRet = [];
@@ -109,7 +111,7 @@ var Channeljs = (function () {
      * @param  {Function} cb    [description]
      * @return {[type]}         [description]
      */
-    Channel.prototype.unsub = function (topic, cb) {
+    proto.unsub = function (topic, cb) {
         var i = 0,
             l;
         if (topic instanceof Array
@@ -137,7 +139,7 @@ var Channeljs = (function () {
      * @param  {Function} cb    [description]
      * @return {[type]}         [description]
      */
-    Channel.prototype.once = function (topic, cb) {
+    proto.once = function (topic, cb) {
         var self = this;
         function cbTMP() {
             self.unsub(topic, cbTMP);
@@ -152,7 +154,7 @@ var Channeljs = (function () {
      *                 the topic queues that must  be emptied
      * @return [Channel] the instance
      */
-    Channel.prototype.reset = function () {
+    proto.reset = function () {
         var ts = Array.prototype.slice.call(arguments, 0),
             l = ts.length,
             i = 0;

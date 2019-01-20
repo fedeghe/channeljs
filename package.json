@@ -1,13 +1,12 @@
 {
   "name": "@fedeghe/channeljs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "description",
   "main": "dist/index.js",
   "scripts": {
     "build": "malta source/build.json",
     "buildev": "malta source/buildev.json",
     "clean": "malta source/clean.json",
-    "postinstall": "npm run build",
     "test": "mocha",
     "cover": "istanbul cover _mocha",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
