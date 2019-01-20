@@ -11,9 +11,8 @@ Create a Channel, or get it if already exists.
 ``` js
 // Somewhere, subscribe to the "mult"
 // topic of the "math" channel
-Channel.get('math').sub('mult', function(){
-    var topic = arguments[0],
-        args = arguments.slice(1);
+Channel.get('math').sub('mult', function() {
+    var args = [].slice.call(arguments, 0);
     return args.reduce(function(el, acc) {
         return acc * el;
     }, 1);
@@ -27,8 +26,8 @@ var mult = Channel.get('math').pub('mult', [2, 3, 5, 7, 11, 13, 17]);
 console.log(mult) // 510510
 ```
 so the flow seem to be  
-1) **subscribe** to a _topic_ passing as second parameter a function that will receive as first parameter the topic it self and then all other stuff passed when publishing, the function will return a result.  
-2) get the result calling **publish** to a topic passing all parameters needed for the subscriber to be able to calculate and return the result.  
+1) **subscribe** to a _topic_ passing as second parameter a function that will receive all parameters passed when publishing, the function will most likely return a result.  
+2) get that result calling **publish** to a topic passing all parameters needed for the subscriber to be able to calculate and return the result.  
 
  ...there is something more:  
 
@@ -61,18 +60,40 @@ Creates, if not already existing, an instance of Channel indexed as `ux`  and re
 ## @instance methods
 
 #### pub(topic \<string\>|\<array\>, parameters \<array\>)
+
 ``` js
 uxEvents.pub('cartUpdated', articles)
-```
-Publishes parameters on one or more topics
+```  
+Publishes parameters on one or more topics.  
 
-#### pub(topic \<string\>|\<array\>, parameters \<array\>)
+#### sub(topic \<string\>|\<array\>, subscriber \<function\> {, retroActive \<boolean\>})
 ``` js
-uxEvents.sub('cartUpdated', function (topic) {
-    var articles = [].slice.call(arguments, 1);
-    // TO BE CONTINUED...
+uxEvents.sub('cartUpdated', function () {
+    var articles = [].slice.call(arguments, 0);
 })
 ```
-Publishes parameters on one or more topics
+Registers a listener to a particular _topic_ on the channel; the subscribing function will receive all parameters passed in an array as second parameter at _pub_ call:
+``` js
+ch.pub('bePolite', ['Hello', 'World', '!'])
+...
+ch.sub('bePolite', function (a, b, c) {
+    console.log(`${a} ${b} ${c}`) // Hello World !
+})
+```  
+The `retroActive` parameter allows the subcriber to be executed immediately for all relevant past published events.  
 
-// TO BE CONTINUED...
+#### unsub(topic \<string\>|\<array\>, subscriber \<function\>)
+Removes the _subscriber_ from the _topic_
+
+#### once(topic \<string\>|\<array\>, subscriber \<function\>)
+Exactly as `sub` but once, not retroactivable.
+
+#### enabe()
+Enables a channel
+
+#### disabe()
+Disables a channel
+
+---
+    
+for the moment .... not to be continued
