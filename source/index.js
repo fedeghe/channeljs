@@ -6,6 +6,7 @@ var Channeljs = (function () {
     'use strict';
     var channels = {},
         findInArray = function (arr, mvar) { return arr.indexOf(mvar); },
+        
         Channel = function () {
             this.topic2cbs = {};
             this.lateTopics = {};
@@ -17,7 +18,9 @@ var Channeljs = (function () {
      * @return {undefined}
      */
     Channel.prototype.enable = function () {
+        var changed = this.enabled
         this.enabled = true;
+        return changed !== this.enabled;
     };
 
     /**
@@ -25,7 +28,9 @@ var Channeljs = (function () {
      * @return {undefined}
      */
     Channel.prototype.disable = function () {
+        var changed = this.enabled
         this.enabled = false;
+        return changed !== this.enabled;
     };
 
     /**
