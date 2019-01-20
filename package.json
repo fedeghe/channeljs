@@ -1,8 +1,8 @@
 {
   "name": "channeljs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "description",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "malta source/build.json",
     "buildev": "malta source/buildev.json",
