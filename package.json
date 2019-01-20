@@ -1,6 +1,6 @@
 {
   "name": "@fedeghe/channeljs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "description",
   "main": "dist/index.js",
   "scripts": {
@@ -16,6 +16,11 @@
     "pubsub",
     "multi-pubsub"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fedeghe/channeljs.git"
+  },
+  "homepage": "https://github.com/fedeghe/channeljs#readme",
   "author": "federico.ghedina@gmail.com",
   "license": "MIT",
   "devDependencies": {
