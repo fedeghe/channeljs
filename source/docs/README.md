@@ -2,4 +2,74 @@
 [![Build Status](https://travis-ci.org/fedeghe/channeljs.svg?branch=master)](https://travis-ci.org/fedeghe/channeljs)
 # Channeljs
 
-Channeljs aims to offer a easy-to-use and flexible Observer pattern implementation, known also as "Pub/Sub" from publish-subscribe.   
+Channeljs aims to offer a easy-to-use and flexible Observer pattern implementation.
+
+
+---
+
+Create a Channel, or get it if already exists.
+``` js
+// Somewhere, subscribe to the "mult"
+// topic of the "math" channel
+Channel.get('math').sub('mult', function(){
+    var topic = arguments[0],
+        args = arguments.slice(1);
+    return args.reduce(function(el, acc) {
+        return acc * el;
+    }, 1);
+});
+```
+
+then elsewhere
+
+``` js
+var mult = Channel.get('math').pub('mult', [2, 3, 5, 7, 11, 13, 17]);
+console.log(mult) // 510510
+```
+so the flow seem to be  
+1) **subscribe** to a _topic_ passing as second parameter a function that will receive as first parameter the topic it self and then all other stuff passed when publishing, the function will return a result.  
+2) get the result calling **publish** to a topic passing all parameters needed for the subscriber to be able to calculate and return the result.  
+
+ ...there is something more:  
+
+3) since there could be more subscribers to the same topic, in that case publish will return an array of results, each one corresponding to the result returned from the relative subscriber (subscription order).
+
+4) it's possible to do the opposite, allowing for example a \`late\` subscriber to be informed at subscription time of a past publishing on a topic.
+
+5) couple of more functions: `once` (sub), `enable`, `disable`, `unsub` (one, more,or all topics) and `reset`
+---
+---
+## Raw Api
+
+Once the script has been imported in the browser, or required in Your script (I assume required as `Channeljs`), there are two static functions available:  
+
+
+#### Channeljs.getAllChannels
+``` js
+const myChannels  = Channeljs.getAllChannels({enabledStatus <boolean>});
+```
+Returns an object literal containing all existing Channels, optionally can be passed a boolean value which enables a filter, when `true` it will return only all enabled Channels, when `false` only disabled ones.  
+
+#### Channeljs.get([name \<string\>])  
+``` js
+const uxEvents = Channeljs.get('ux');
+```
+Creates, if not already existing, an instance of Channel indexed as `ux`  and returns it. Now we can use it.
+
+---
+
+## @instance methods
+
+#### pub(topic \<string\>|\<array\>, parameters \<array\>)
+``` js
+uxEvents.pub('cartUpdated', articles)
+```
+Publishes parameters on one or more topics
+
+#### pub(topic \<string\>|\<array\>, parameters \<array\>)
+``` js
+uxEvents.sub('cartUpdated', function (topic) {
+    
+})
+```
+Publishes parameters on one or more topics
