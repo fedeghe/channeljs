@@ -1,5 +1,6 @@
 {
   "name": "@fedeghe/channeljs",
+  "description": "Channeljs aims to offer a easy-to-use and flexible Observer pattern implementation.",
   "version": "1.0.4",
   "description": "description",
   "main": "dist/index.js",
