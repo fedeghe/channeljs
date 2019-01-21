@@ -78,7 +78,7 @@ ch.pub('bePolite', ['Hello', 'World', '!'])
 ...
 ch.sub('bePolite', function (a, b, c) {
     console.log(`${a} ${b} ${c}`) // Hello World !
-})
+}, true) // true here enables retroActivity
 ```  
 The `retroActive` parameter allows the subcriber to be executed immediately for all relevant past published events.  
 
@@ -88,10 +88,10 @@ Removes the _subscriber_ from the _topic_
 #### once(topic \<string\>|\<array\>, subscriber \<function\>)
 Exactly as `sub` but once, not retroactivable.
 
-#### enabe()
+#### enable()
 Enables a channel
 
-#### disabe()
+#### disable()
 Disables a channel
 
 ---
