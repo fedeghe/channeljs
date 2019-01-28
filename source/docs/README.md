@@ -59,14 +59,14 @@ Creates, if not already existing, an instance of Channel indexed as `ux`  and re
 
 ## @instance methods
 
-#### pub(topic \<string\>|\<array\>, parameters \<array\>)
+#### pub(topic \<string\>, parameters \<array\>)
 
 ``` js
 uxEvents.pub('cartUpdated', articles)
 ```  
 Publishes parameters on one or more topics.  
 
-#### sub(topic \<string\>|\<array\>, subscriber \<function\> {, retroActive \<boolean\>})
+#### sub(topic \<string\>, subscriber \<function\> {, retroActive \<boolean\>})
 ``` js
 uxEvents.sub('cartUpdated', function () {
     var articles = [].slice.call(arguments, 0);
@@ -82,11 +82,11 @@ ch.sub('bePolite', function (a, b, c) {
 ```  
 The `retroActive` parameter allows the subcriber to be executed immediately for all relevant past published events.  
 
-#### unsub(topic \<string\>|\<array\>, subscriber \<function\>)
+#### unsub(topic \<string\>, subscriber \<function\>)
 Removes the _subscriber_ from the _topic_
 
-#### once(topic \<string\>|\<array\>, subscriber \<function\>)
-Exactly as `sub` but once, not retroactivable.
+#### once(topic \<string\>, subscriber \<function\> {, retroActive \<boolean\>})
+Exactly as `sub` but once, retroactivable.
 
 #### enable()
 Enables a channel
