@@ -1,7 +1,3 @@
-/**
- * Copyright (c) 2019 Federico Ghedina
- */
-
 var Channeljs = (function () {
     'use strict';
     var channels = {},
@@ -48,12 +44,12 @@ var Channeljs = (function () {
         var i = 0,
             l,
             res = [];
-        if (topic instanceof Array) {
-            for (l = topic.length; i < l; i += 1) {
-                topic[i] in this.topic2cbs
-                && res.push(this.pub(topic[i], args));
-            }
-        } else {
+        // if (topic instanceof Array) {
+        //     for (l = topic.length; i < l; i += 1) {
+        //         topic[i] in this.topic2cbs
+        //         && res.push(this.pub(topic[i], args));
+        //     }
+        // } else {
             if (!(topic in this.topic2cbs) || !this.enabled) {
                 //save it for late pub, at everysub to this topic
                 if (topic in this.lateTopics) {
@@ -66,7 +62,7 @@ var Channeljs = (function () {
             for (l = this.topic2cbs[topic].length; i < l; i += 1) {
                 res.push(this.topic2cbs[topic][i].apply(null, args));
             }
-        }
+        // }
         return res;
     };
 
@@ -83,11 +79,6 @@ var Channeljs = (function () {
         var i = 0,
             l,
             lateRet = [];
-        if (topic instanceof Array) {
-            for (l = topic.length; i < l; i += 1) {
-                this.sub(topic[i], cb, retro);
-            }
-        }
         if (!(topic in this.topic2cbs) || !this.enabled) {
             this.topic2cbs[topic] = [];
         }
@@ -112,21 +103,13 @@ var Channeljs = (function () {
      * @return {[type]}         [description]
      */
     proto.unsub = function (topic, cb) {
-        var i = 0,
-            l;
-        if (topic instanceof Array
-            && cb instanceof Array
-        ) {
-            for (l = topic.length; i < l; i += 1) {
-                this.unsub(topic[i], cb[i]);
-            }
-        }
+        var i = 0;
         if (topic in this.topic2cbs) {
             i = findInArray(this.topic2cbs[topic], cb);
             i >= 0
             && this.topic2cbs[topic].splice(i, 1)
             && (this.topic2cbs[topic].length === 0 && (delete this.topic2cbs[topic]))
-        }
+        } else {}
         if (topic in this.lateTopics) {
             delete this.lateTopics[topic];
         }
@@ -139,13 +122,13 @@ var Channeljs = (function () {
      * @param  {Function} cb    [description]
      * @return {[type]}         [description]
      */
-    proto.once = function (topic, cb) {
+    proto.once = function (topic, cb, retro) {
         var self = this;
         function cbTMP() {
             self.unsub(topic, cbTMP);
             return cb.apply(null, Array.prototype.slice.call(arguments, 0));
         };
-        this.sub(topic, cbTMP);
+        return this.sub(topic, cbTMP, retro);
     };
 
     /**
