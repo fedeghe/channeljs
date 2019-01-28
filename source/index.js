@@ -44,25 +44,18 @@ var Channeljs = (function () {
         var i = 0,
             l,
             res = [];
-        // if (topic instanceof Array) {
-        //     for (l = topic.length; i < l; i += 1) {
-        //         topic[i] in this.topic2cbs
-        //         && res.push(this.pub(topic[i], args));
-        //     }
-        // } else {
-            if (!(topic in this.topic2cbs) || !this.enabled) {
-                //save it for late pub, at everysub to this topic
-                if (topic in this.lateTopics) {
-                    this.lateTopics[topic].push({ args: args });
-                } else {
-                    this.lateTopics[topic] = [{ args: args }];
-                }
-                return null;
+        if (!(topic in this.topic2cbs) || !this.enabled) {
+            //save it for late pub, at everysub to this topic
+            if (topic in this.lateTopics) {
+                this.lateTopics[topic].push({ args: args });
+            } else {
+                this.lateTopics[topic] = [{ args: args }];
             }
-            for (l = this.topic2cbs[topic].length; i < l; i += 1) {
-                res.push(this.topic2cbs[topic][i].apply(null, args));
-            }
-        // }
+            return null;
+        }
+        for (l = this.topic2cbs[topic].length; i < l; i += 1) {
+            res.push(this.topic2cbs[topic][i].apply(null, args));
+        }
         return res;
     };
 
@@ -109,7 +102,8 @@ var Channeljs = (function () {
             i >= 0
             && this.topic2cbs[topic].splice(i, 1)
             && (this.topic2cbs[topic].length === 0 && (delete this.topic2cbs[topic]))
-        } else {}
+        }
+
         if (topic in this.lateTopics) {
             delete this.lateTopics[topic];
         }
