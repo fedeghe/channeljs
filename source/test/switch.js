@@ -7,8 +7,8 @@ describe('check enable, disable and reset', () => {
     it('should disable and listen for silence on publish', () => {
         var c = Channeljs.get('one');
         c.sub('summing', fun.sum)
-
         c.disable();
+
         var allChannels = Channeljs.getChannels(),
             disabledChannels = Channeljs.getChannels(false),
             enabledChannels = Channeljs.getChannels(true),
