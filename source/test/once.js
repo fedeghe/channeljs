@@ -26,7 +26,7 @@ describe('one time sub', () => {
 
     it('should sub once, retro inactive', function () {
         var c = Channeljs.get('one');
-        c.pub('double', [7]);
+        c.pub('double', [7]);   
         var results1 = c.once('double', fun.double);
         assert.equal(results1, null);
         c.reset();
