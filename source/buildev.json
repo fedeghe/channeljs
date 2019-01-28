@@ -4,6 +4,6 @@
         "mkdir dist test"
     ],
     "source/docs/README.md": ". -vars=source/vars.json",
-    "source/index.js": "dist -plugins=malta-header-comment[name:'source/head.txt'] -vars=source/vars.json -vars=source/vars.json",
+    "source/index.js": "dist -plugins=malta-header-comment[name:'source/head.txt']...malta-mocha -vars=source/vars.json -vars=source/vars.json",
     "source/test/*.js": "test -plugins=malta-mocha"
 }
