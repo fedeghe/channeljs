@@ -4,11 +4,20 @@
 
 Channeljs aims to offer a easy-to-use and flexible Observer pattern implementation.
 
+## install it
+```
+> npm i @fedeghe/channeljs
+```
 
 ---
 
 Create a Channel, or get it if already exists.
 ``` js
+
+const Channel = require('@fedeghe/channeljs');
+// The Channel.get function lets You create (or retrieve if elsewhere created)
+// an instance of a channel.
+
 // Somewhere, subscribe to the "mult"
 // topic of the "math" channel
 Channel.get('math').sub('mult', function() {

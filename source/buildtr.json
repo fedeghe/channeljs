@@ -3,7 +3,6 @@
         "rm -rf dist test",
         "mkdir dist test"
     ],
-    "#source/docs/README.md": ". -vars=source/vars.json",
     "#source/index.js": "dist -plugins=malta-js-uglify['mangle':true,'compress':{'sequences': true,'dead_code': true,'conditionals': true,'booleans': true,'unused': true,'if_return': true,'join_vars': true,'drop_console': true}]...malta-header-comment[name:'source/head.txt'] -vars=source/vars.json",
     "#source/test/*.js": "test -plugins=malta-mocha"
 }
