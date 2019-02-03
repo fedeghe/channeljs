@@ -3,6 +3,6 @@
         "rm -rf dist test",
         "mkdir dist test"
     ],
-    "#source/index.js": "dist -plugins=malta-js-uglify[compress:true]...malta-header-comment[name:'source/head.txt'] -vars=source/vars.json",
+    "#source/index.js": "dist -plugins=malta-js-uglify[compress:true,output:{max_line_len:200}]...malta-header-comment[name:'source/head.txt'] -vars=source/vars.json",
     "#source/test/*.js": "test -plugins=malta-mocha"
 }
