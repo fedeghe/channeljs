@@ -4,7 +4,7 @@
   "version": "1.1.4",
   "main": "dist/index.js",
   "scripts": {
-    "build": "malta source/build.json",
+    "build": "malta source/buildtr.json",
     "buildev": "malta source/buildev.json",
     "clean": "malta source/clean.json",
     "test": "mocha",
