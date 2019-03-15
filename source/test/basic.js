@@ -35,4 +35,13 @@ describe('basic operations', () => {
         assert.equal(results[0], 15);
         assert.equal(results[1], 3);
     });
+    
+    it('should publish one element as a one element array', () => {
+        var c = Channeljs.get('one');
+        c.sub('triple', fun.triple);
+        var results1 = c.pub('triple', [8]);
+            results2 = c.pub('triple', 4);
+        assert.equal(results1[0], 24);
+        assert.equal(results2[0], 12);
+    });
 });

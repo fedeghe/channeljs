@@ -44,6 +44,9 @@ var Channeljs = (function () {
         var i = 0,
             l,
             res = [];
+        if (!(args instanceof Array)) {
+            args = [args]
+        }
         if (!(topic in this.topic2cbs) || !this.enabled) {
             //save it for late pub, at everysub to this topic
             if (topic in this.lateTopics) {
