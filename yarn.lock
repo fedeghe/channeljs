@@ -1003,7 +1003,7 @@ malta-mocha@^1.0.12:
     malta ">=3.8.14"
     mocha "^5.2.0"
 
-malta@>=3.8.14, malta@^3.8.19:
+malta@>=3.8.14, malta@^3.9.16:
   version "3.9.16"
   resolved "https://registry.yarnpkg.com/malta/-/malta-3.9.16.tgz#d708abef0a62618a21af2f162fc95434b02db2ab"
   integrity sha512-SA38WnQ5guC+KgbAHRiOhgyfsGu1kqwc1UYLnz935A3Ge+Uu+RTwqLpD2OOCGyKSLL6M/Uayimag/8eilgVx4w==
