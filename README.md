@@ -9,6 +9,12 @@ Channeljs aims to offer a easy-to-use and flexible Observer pattern implementati
 > npm i @fedeghe/channeljs
 ```
 
+## run the tests / coverage
+```
+> npm run test
+> npm run cover 
+```
+
 ---
 
 Create a Channel, or get it if already exists.
