@@ -85,7 +85,6 @@ var Channeljs = (function () {
         }
 
         this.topic2cbs[topic].push(cb);
-        console.log('topics: ', this.topic2cbs)
         // check lateTopics
         // save it for late pub, at everysub to this topic
         //
