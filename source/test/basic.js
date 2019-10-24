@@ -50,5 +50,6 @@ describe('basic operations', () => {
             results2 = c.pub('triple', 4);
         assert.equal(results1[0], 24);
         assert.equal(results2[0], 12);
+        assert.equal(results2[1], 16);
     });
 });
