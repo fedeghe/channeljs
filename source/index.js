@@ -56,14 +56,15 @@ var Channeljs = (function () {
             }
             return null;
         }
-        for (l = this.topic2cbs[topic].length; i < l; i += 1) {
-            res.push(this.topic2cbs[topic][i].apply(null, args));
-        }
         if ('*' in this.topic2cbs) {
             for (i = 0, l = this.topic2cbs['*'].length; i < l; i += 1) {
                 res.push(this.topic2cbs['*'][i].apply(null, args));
             }   
         }
+        for (i = 0, l = this.topic2cbs[topic].length; i < l; i += 1) {
+            res.push(this.topic2cbs[topic][i].apply(null, args));
+        }
+        
         return res;
     };
 

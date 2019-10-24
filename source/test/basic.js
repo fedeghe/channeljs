@@ -48,8 +48,11 @@ describe('basic operations', () => {
         c.sub('*', fun.quadruple);
         var results1 = c.pub('triple', [8]);
             results2 = c.pub('triple', 4);
-        assert.equal(results1[0], 24);
-        assert.equal(results2[0], 12);
-        assert.equal(results2[1], 16);
+        // generic first, then topic specific
+        assert.equal(results1[0], 32);
+        assert.equal(results1[1], 24);
+        //same
+        assert.equal(results2[0], 16);
+        assert.equal(results2[1], 12);
     });
 });
