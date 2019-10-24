@@ -3,7 +3,6 @@ var assert = require('assert'),
     fun = require('./funczs');
 
 describe('basic operations', () => {  
-     
     it('should create some channels', () => {
         var c1 = Channeljs.get('one'),
             c2 = Channeljs.get('two');
@@ -39,6 +38,14 @@ describe('basic operations', () => {
     it('should publish one element as a one element array', () => {
         var c = Channeljs.get('one');
         c.sub('triple', fun.triple);
+        var results1 = c.pub('triple', [8]);
+            results2 = c.pub('triple', 4);
+        assert.equal(results1[0], 24);
+        assert.equal(results2[0], 12);
+    });
+    it('should publish on *', () => {
+        var c = Channeljs.get('one');
+        c.sub('*', fun.quadruple);
         var results1 = c.pub('triple', [8]);
             results2 = c.pub('triple', 4);
         assert.equal(results1[0], 24);

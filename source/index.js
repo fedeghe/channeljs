@@ -59,6 +59,11 @@ var Channeljs = (function () {
         for (l = this.topic2cbs[topic].length; i < l; i += 1) {
             res.push(this.topic2cbs[topic][i].apply(null, args));
         }
+        if ('*' in this.topic2cbs) {
+            for (i = 0, l = this.topic2cbs['*'].length; i < l; i += 1) {
+                res.push(this.topic2cbs['*'][i].apply(null, args));
+            }   
+        }
         return res;
     };
 
@@ -80,7 +85,7 @@ var Channeljs = (function () {
         }
 
         this.topic2cbs[topic].push(cb);
-
+        console.log('topics: ', this.topic2cbs)
         // check lateTopics
         // save it for late pub, at everysub to this topic
         //
