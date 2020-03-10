@@ -80,13 +80,13 @@ Creates, if not already existing, an instance of Channel indexed as `ux`  and re
 uxEvents.pub('cartUpdated', articles)
 ```  
 Publishes parameters on one or more topics. If an array is passed then the subscribing function will receive the content of the array as parameters:
-```
+``` js
 ch.sub('topicx', (a, b, c) => { ... })
 /* ----> */ 
 ch.pub('topicx', [1, 2 ,3])
 ```  
 if instead the second agrument used to invoke the `pub` **is not** an array then the subscriber will receive only that as first arguments, all other will not be passed:
-```
+``` js
 ch.sub('topicx', (the_obj) => { ... })
 /* ----> */ 
 ch.pub('topicx', { name: 'widgzard' })
