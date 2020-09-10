@@ -1,8 +1,9 @@
+'use strict';
 /*
 
 C H A N N E L J S
 
-Date: 24/10/2019
+Date: 10/9/2020
 Size: ~1KB
 Author: Federico Ghedina <federico.ghedina@gmail.com>
 */
