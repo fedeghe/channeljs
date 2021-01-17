@@ -2,17 +2,17 @@
 [![Build Status](https://travis-ci.org/fedeghe/channeljs.svg?branch=master)](https://travis-ci.org/fedeghe/channeljs)
 # Channeljs
 
-Channeljs aims to offer a easy-to-use and flexible Observer pattern implementation.
+Channeljs aims to offer a isomorphic easy-to-use, small and flexible Observer pattern implementation.
 
 ## install it
 ```
-> npm i @fedeghe/channeljs
+> yarn add @fedeghe/channeljs
 ```
 
 ## run the tests / coverage
 ```
-> npm run test
-> npm run cover 
+> yarn test
+> yarn cover 
 ```
 
 ---
@@ -20,39 +20,40 @@ Channeljs aims to offer a easy-to-use and flexible Observer pattern implementati
 Create a Channel, or get it if already exists.
 ``` js
 
-const Channel = require('@fedeghe/channeljs');
+import Channel from '@fedeghe/channeljs'
+// import Channel from '@fedeghe/channeljs';
+
 // The Channel.get function lets You create (or retrieve if elsewhere created)
 // an instance of a channel.
 
 // Somewhere, subscribe to the "mult"
 // topic of the "math" channel
-Channel.get('math').sub('mult', function() {
-    var args = [].slice.call(arguments, 0);
-    return args.reduce(function(el, acc) {
-        return acc * el;
-    }, 1);
-});
+Channel.get('math').sub('mult',
+    (...args) => args.reduce((el, acc) => acc * el, 1)
+);
 ```
 
 then elsewhere
 
 ``` js
-var mult = Channel.get('math').pub('mult', [2, 3, 5, 7, 11, 13, 17]);
-console.log(mult) // 510510
+import Channel from '@fedeghe/channeljs'
+// ...
+const mult = Channel.get('math').pub('mult', [2, 3, 5]);
+console.log(mult) // 30
 ```
-so the flow seem to be  
-1) **subscribe** to a _topic_ passing as second parameter a function that will receive all parameters passed when publishing, the function will most likely return a result.  
+so the flow seems to be  
+1) **subscribe** to a _topic_ passing as second parameter a function that will receive all parameters passed when publishing, the function could as side effect consume the published data or/and return a result.  
 2) get that result calling **publish** to a topic passing all parameters needed for the subscriber to be able to calculate and return the result.  
 
  ...there is something more:  
 
-3) since there could be more subscribers to the same topic, in that case publish will return an array of results, each one corresponding to the result returned from the relative subscriber (subscription order).
+3) since there could be more subscribers to the same topic, in that case publish will return an array of results, each one corresponding to the result returned from the relative subscriber (subscription order). There is not realy way to be sure about the result/subscriber correspondance thus it is not a bad idea to include this information in the returned result (as a referrer information).
 
-4) it's possible to do the opposite, allowing for example a \`late\` subscriber to be informed at subscription time of a past publishing on a topic.
+4) it's possible to do the opposite, allowing for example a \`late\` subscriber to be informed **at subscription time** of a past publishing on a topic.
 
-5) couple of more functions: `once` (sub), `enable`, `disable`, `unsub` (one, more,or all topics) and `reset`
+5) couple of more functions: `once` (sub), `enable`, `disable`, `unsub` (one, more, or all topics) and `reset`
 ---
----
+
 ## Raw Api
 
 Once the script has been imported in the browser, or required in Your script (I assume required as `Channeljs`), there are two static functions available:  
@@ -72,9 +73,11 @@ Creates, if not already existing, an instance of Channel indexed as `ux`  and re
 
 ---
 
-## @instance methods
+## @instance methods  
 
-#### pub(topic \<string\>, parameters \<array\> | single parameter)
+<br/>  
+
+### **pub(topic \<string\>, parameters \<array\> | single parameter)**
 
 ``` js
 uxEvents.pub('cartUpdated', articles)
@@ -91,8 +94,9 @@ ch.sub('topicx', (the_obj) => { ... })
 /* ----> */ 
 ch.pub('topicx', { name: 'widgzard' })
 ```
+<br/>  
 
-#### sub(topic \<string\>, subscriber \<function\> {, retroActive \<boolean\>})
+### **sub(topic \<string\>, subscriber \<function\> {, retroActive \<boolean\>})**
 ``` js
 uxEvents.sub('cartUpdated', function () {
     var articles = [].slice.call(arguments, 0);
@@ -108,18 +112,23 @@ ch.sub('bePolite', function (a, b, c) {
 ```  
 The `retroActive` parameter allows the subcriber to be executed immediately for all relevant past published events.  
 
-#### unsub(topic \<string\>, subscriber \<function\>)
+<br/>
+
+### **unsub(topic \<string\>, subscriber \<function\>)**
 Removes the _subscriber_ from the _topic_
 
-#### once(topic \<string\>, subscriber \<function\> {, retroActive \<boolean\>})
+<br/>
+
+### **once(topic \<string\>, subscriber \<function\> {, retroActive \<boolean\>}**  
 Exactly as `sub` but once, retroactivable.
 
-#### enable()
+
+<br/>
+
+### **enable()**  
 Enables a channel
 
-#### disable()
-Disables a channel
+<br/>
 
----
-    
-for the moment .... not to be continued
+### **disable()**  
+Disables a channel

@@ -64,7 +64,6 @@ var Channeljs = (function () {
         for (i = 0, l = this.topic2cbs[topic].length; i < l; i += 1) {
             res.push(this.topic2cbs[topic][i].apply(null, args));
         }
-        
         return res;
     };
 
