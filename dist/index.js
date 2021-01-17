@@ -1,7 +1,7 @@
 'use strict';
 /*
 
-C H A N N E L J S
+C H A N N E L J S  v.1.2.7
 
 Date: 17/1/2021
 Size: ~1KB
