@@ -1,10 +1,10 @@
 'use strict';
 /*
 
-C H A N N E L J S  v.1.2.8
+C H A N N E L J S  v.1.2.9
 
-Date: 15/4/2022
-Size: ~1KB
+Date: 12/2/2023
+Size: ~1.94KB
 Author: Federico Ghedina <federico.ghedina@gmail.com>
 */
 var Channeljs=function(){"use strict";var t={},i=function(t,i){return t.indexOf(i)},s=function(){this.topic2cbs={},this.lateTopics={},this.enabled=!0},e=function(t,i){var s=t.enabled
