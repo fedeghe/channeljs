@@ -1,7 +1,7 @@
 {
     "name": "@fedeghe/channeljs",
     "description": "multi channel retroactivatable observer utility",
-    "version": "1.2.9",
+    "version": "1.2.10",
     "main": "dist/index.js",
     "scripts": {
         "build": "malta source/buildtr.json",
