@@ -1,9 +1,9 @@
 'use strict';
 /*
 
-C H A N N E L J S  v.1.2.9
+C H A N N E L J S  v.1.2.10
 
-Date: 12/2/2023
+Date: 21/1/2024
 Size: ~1.94KB
 Author: Federico Ghedina <federico.ghedina@gmail.com>
 */
