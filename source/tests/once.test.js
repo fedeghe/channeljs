@@ -1,5 +1,4 @@
-var assert = require('assert'),
-    Channeljs = require('../source/'),
+var Channeljs = require('../dist'),
     fun = require('./funczs');
 
 describe('one time sub', () => {
@@ -9,8 +8,8 @@ describe('one time sub', () => {
         c.once('double', fun.double);
         var results1 = c.pub('double', [7]),
             results2 = c.pub('double', [7]);
-        assert.equal(results1[0], 14);
-        assert.equal(results2, null);
+        expect(results1[0]).toBe(14);
+        expect(results2).toBe(null);
         c.reset();
     });
 
@@ -19,8 +18,8 @@ describe('one time sub', () => {
         c.pub('double', [7]);
         var results1 = c.once('double', fun.double, true),
             results2 = c.pub('double', [7]);
-        assert.equal(results1[0], 14);
-        assert.equal(results2, null);
+        expect(results1[0]).toBe(14);
+        expect(results2).toBe(null);
         c.reset();
     });
 
@@ -28,7 +27,7 @@ describe('one time sub', () => {
         var c = Channeljs.get('one');
         c.pub('double', [7]);   
         var results1 = c.once('double', fun.double);
-        assert.equal(results1, null);
+        expect(results1).toBeUndefined();
         c.reset();
     });
 

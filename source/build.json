@@ -1,8 +1,8 @@
 {
     "EXE": [
-        "rm -rf dist test",
-        "mkdir dist test"
+        "rm -rf dist tests",
+        "mkdir dist tests"
     ],
     "#source/index.js": "dist -plugins=malta-js-uglify[compress:true,output:{max_line_len:200}]...malta-header-comment[name:'source/head.txt'] -vars=source/vars.json",
-    "#source/test/*.js": "test -plugins=malta-mocha"
+    "#source/tests/*.js": "tests -plugins=malta-jest[argz:'--rootDir=.']"
 }

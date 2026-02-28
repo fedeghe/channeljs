@@ -1,8 +1,8 @@
 {
     "EXE": [
-        "rm -rf dist test",
-        "mkdir dist test"
+        "rm -rf dist tests",
+        "mkdir dist tests"
     ],
-    "source/index.js": "dist -plugins=malta-header-comment[name:'source/head.txt']...malta-mocha -vars=source/vars.json -vars=source/vars.json",
-    "source/test/*.js": "test -plugins=malta-mocha"
+    "source/index.js": "dist -plugins=malta-header-comment[name:'source/head.txt']...malta-jest[argz:'--rootDir=.'] -vars=source/vars.json",
+    "source/tests/*.js": "tests -plugins=malta-jest[argz:'--rootDir=.']"
 }

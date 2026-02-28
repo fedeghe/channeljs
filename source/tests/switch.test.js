@@ -1,11 +1,11 @@
-var assert = require('assert'),
-    Channeljs = require('../source/');
+var Channeljs = require('../dist'),
     fun = require('./funczs');
 
 describe('check enable, disable and reset', () => {
 
     it('should disable and listen for silence on publish', () => {
         var c = Channeljs.get('one');
+        Channeljs.get('two');
         c.sub('summing', fun.sum)
         c.disable();
 
@@ -14,17 +14,17 @@ describe('check enable, disable and reset', () => {
             enabledChannels = Channeljs.getChannels(true),
             results = c.pub('summing', [3, 5, 7]);
 
-        assert.equal(Object.keys(allChannels).length, 2)
-        assert.equal(Object.keys(disabledChannels).length, 1)
-        assert.equal(Object.keys(enabledChannels).length, 1)
-        assert.equal(results, null);
+        expect(Object.keys(allChannels).length).toBe(2);
+        expect(Object.keys(disabledChannels).length).toBe(1);
+        expect(Object.keys(enabledChannels).length).toBe(1);
+        expect(results).toBe(null);
     });
 
     it('should re-enable and check on publish', () => {
         var c = Channeljs.get('one');
         c.enable();
         var results = c.pub('summing', [3, 5, 7]);
-        assert.equal(results[0], 15);
+        expect(results[0]).toBe(15);
     });
 
     it('reset all topic on channel and listen for silence on publish', () => {
@@ -32,17 +32,17 @@ describe('check enable, disable and reset', () => {
         c.reset();
         var results = c.pub('summing', [3, 5, 7]);
         c.unsub('summing');
-        assert.equal(results, null);
+        expect(results).toBe(null);
     });
 
     it('should reset', () => {
         var c1 = Channeljs.get('one');
         c1.reset();
-        assert.equal(c1.enabled, true);
-        assert.equal(typeof c1.topic2cbs, 'object');
-        assert.equal(Object.keys(c1.topic2cbs).length, 0);
-        assert.equal(typeof c1.lateTopics, 'object');
-        assert.equal(Object.keys(c1.lateTopics).length, 0);
-        assert.equal(typeof c1, 'object');
+        expect(c1.enabled).toBe(true);
+        expect(typeof c1.topic2cbs).toBe('object');
+        expect(Object.keys(c1.topic2cbs).length).toBe(0);
+        expect(typeof c1.lateTopics).toBe('object');
+        expect(Object.keys(c1.lateTopics).length).toBe(0);
+        expect(typeof c1).toBe('object');
     });
 });

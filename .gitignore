@@ -1,6 +1,6 @@
 /node_modules
 /coverage
-/test
+/tests
 /.nyc_output
 .printVersion
 .buildNum.json

@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/fedeghe/channeljs/badge.svg?branch=master)](https://coveralls.io/github/fedeghe/channeljs?branch=master)  
+[![codecov](https://codecov.io/gh/fedeghe/channeljs/graph/badge.svg?token=qRc60zd2DT)](https://codecov.io/gh/fedeghe/channeljs)
 
 # Channeljs
 
